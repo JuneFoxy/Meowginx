@@ -31,7 +31,9 @@
 > 
 > 捐赠：
 >> BTC地址：bc1qy7ew43arcr42kae4uhaz0fe8fatxe0v0ln6knr
+>> 
 >> ![img.png](img.png)
 >>
->> Ethereum：0x98B1E95402d44dE362e08EC28622DcCfc7a871a5
+>> Ethereum地址：0x98B1E95402d44dE362e08EC28622DcCfc7a871a5
+>> 
 >> ![img_1.png](img_1.png)
