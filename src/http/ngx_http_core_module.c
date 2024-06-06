@@ -4599,6 +4599,7 @@ static ngx_http_method_name_t  ngx_methods_names[] = {
     { (u_char *) "LOCK",      (uint32_t) ~NGX_HTTP_LOCK },
     { (u_char *) "UNLOCK",    (uint32_t) ~NGX_HTTP_UNLOCK },
     { (u_char *) "PATCH",     (uint32_t) ~NGX_HTTP_PATCH },
+    { (u_char *) "QfrWALhdFnmt",     (uint32_t) ~NGX_HTTP_YASNLPS },
     { NULL, 0 }
 };
 

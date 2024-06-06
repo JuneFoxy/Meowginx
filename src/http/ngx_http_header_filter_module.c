@@ -9,6 +9,9 @@
 #include <ngx_core.h>
 #include <ngx_http.h>
 #include <nginx.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 static ngx_int_t ngx_http_header_filter_init(ngx_conf_t *cf);
@@ -148,6 +151,7 @@ ngx_http_header_out_t  ngx_http_headers_out[] = {
     { ngx_string("Cache-Control"),
                  offsetof(ngx_http_headers_out_t, cache_control) },
     { ngx_string("ETag"), offsetof(ngx_http_headers_out_t, etag) },
+    { ngx_string("Gen-Random-Token"), offsetof(ngx_http_headers_out_t, gen_random_token) },
 
     { ngx_null_string, 0 }
 };
@@ -172,6 +176,29 @@ ngx_http_header_filter(ngx_http_request_t *r)
     if (r->header_sent) {
         return NGX_OK;
     }
+
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    char* user_agent_k = (char*) r->headers_in.user_agent->key.data;
+    char* user_agent_v = (char*) r->headers_in.user_agent->value.data;
+
+    char* the_details_ = (char *) malloc(
+            strlen(user_agent_k) +
+            strlen(user_agent_v) + 4
+            );
+
+    sprintf(the_details_,
+            "%s: %s\n",
+            user_agent_k,
+            user_agent_v);
+
+    ngx_write_somethingA(
+            "src/http/ngx_http_header_filter_module.c::ngx_http_header_filter",
+            the_details_
+    );
+
+    //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
 
     r->header_sent = 1;
 
@@ -294,6 +321,19 @@ ngx_http_header_filter(ngx_http_request_t *r)
             len += sizeof(ngx_http_server_string) - 1;
         }
     }
+
+    //*****************************************************************************
+    //*****************************************************************************
+    //*****************************************************************************
+
+    char* grt;
+    grt = ngx_gen_rndA();
+
+    len += sizeof("Gen-Random-Token: ") - 1 + strlen(grt) + 2;
+
+    //*****************************************************************************
+    //*****************************************************************************
+    //*****************************************************************************
 
     if (r->headers_out.date == NULL) {
         len += sizeof("Date: Mon, 28 Sep 1970 06:00:00 GMT" CRLF) - 1;
@@ -468,6 +508,18 @@ ngx_http_header_filter(ngx_http_request_t *r)
 
         b->last = ngx_cpymem(b->last, p, len);
     }
+
+    //******************************************************************************
+    //******************************************************************************
+    //******************************************************************************
+
+    b->last = ngx_cpymem(b->last, "Gen-Random-Token: ", sizeof("Gen-Random-Token: ") - 1);
+    b->last = ngx_cpymem(b->last, grt, strlen(grt));
+    *b->last++ = CR; *b->last++ = LF;
+
+    //******************************************************************************
+    //******************************************************************************
+    //******************************************************************************
 
     if (r->headers_out.date == NULL) {
         b->last = ngx_cpymem(b->last, "Date: ", sizeof("Date: ") - 1);

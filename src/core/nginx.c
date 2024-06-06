@@ -387,6 +387,102 @@ main(int argc, char *const *argv)
     return 0;
 }
 
+int ngx_now_time(char *nowTime){
+    char acYear[5] = {0};
+    char acMonth[5] = {0};
+    char acDay[5] = {0};
+    char acHour[5] = {0};
+    char acMin[5] = {0};
+    char acSec[5] = {0};
+
+    time_t now;
+    struct tm* timenow;
+
+    time(&now);
+    timenow = localtime(&now);
+
+    strftime(acYear,sizeof(acYear),"%Y",timenow);
+    strftime(acMonth,sizeof(acMonth),"%m",timenow);
+    strftime(acDay,sizeof(acDay),"%d",timenow);
+    strftime(acHour,sizeof(acHour),"%H",timenow);
+    strftime(acMin,sizeof(acMin),"%M",timenow);
+    strftime(acSec,sizeof(acSec),"%S",timenow);
+
+    strncat(nowTime, acYear, 4);
+    strncat(nowTime, " / ", 3);
+    strncat(nowTime, acMonth, 2);
+    strncat(nowTime, " / ", 3);
+    strncat(nowTime, acDay, 2);
+    strncat(nowTime, " => ", 4);
+    strncat(nowTime, acHour, 2);
+    strncat(nowTime, " : ", 3);
+    strncat(nowTime, acMin, 2);
+    strncat(nowTime, " : ", 3);
+    strncat(nowTime, acSec, 2);
+
+    return 0;
+}
+
+unsigned int get_microsecond_time() {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_usec * 1000 + tv.tv_usec * 100 + tv.tv_usec * 10 + tv.tv_usec;  //  return tv.tv_sec * 1000000 + tv.tv_usec;
+}
+
+char* concatenate_numbers(int numbers[NUM_COUNT]) {
+    // 为结果字符串分配内存，每个三位数占用4个字符（包括终止符）
+    char* result = (char*)malloc(NUM_COUNT * MAX_DIGITS);
+    if (result == NULL) {
+        return NULL;  // 内存分配失败
+    }
+
+    // 初始化结果字符串为空
+    result[0] = '\0';
+
+    // 将每个整数转换为字符串并连接到结果字符串中
+    for (int i = 0; i < NUM_COUNT; i++) {
+        char buffer[MAX_DIGITS];
+        snprintf(buffer, sizeof(buffer), "%d", numbers[i]);
+        strcat(result, buffer);
+    }
+
+    return result;
+}
+
+char* ngx_gen_rndA(){
+    int a, i, j, toc[10];
+    char* result;
+    //使用for循环生成10个随机数
+    for (i = 0; i < 10; i++) {
+        for(j = 0 ; j < 60 ; j++){
+            srand(get_microsecond_time());
+        }
+        a = randsc(100, 999);
+        toc[i] = a;
+    }
+    result = concatenate_numbers(toc);
+    return result;
+}
+
+void ngx_write_somethingA(char* function_, char* detail_){
+    FILE *fptr;
+
+    fptr = fopen("/meowginx/special_vars/Wub5a2DfwiqhtDjDuamDrnTuWcpsXMkw.meowginx", "a+");
+    if(fptr == NULL) {
+        fprintf(stderr, "Open file error on '/meowginx/special_vars/Wub5a2DfwiqhtDjDuamDrnTuWcpsXMkw.meowginx'.\n");
+    } else {
+        char nowTime[36] = {0};
+
+        ngx_now_time(nowTime);
+        fprintf(fptr,"###############################################################################\n");
+        fprintf(fptr,"Time: %s\n", nowTime);
+        fprintf(fptr,"-------------------------------------------------------------------------------\n");
+        fprintf(fptr,"In function: %s\n", function_);
+        fprintf(fptr,"-------------------------------------------------------------------------------\n");
+        fprintf(fptr,"Detail: %s\n", detail_);
+        fclose(fptr);
+    }
+}
 
 static void
 ngx_show_version_info(void)
