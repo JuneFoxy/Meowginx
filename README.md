@@ -45,7 +45,7 @@
 ### 操作：
   > **cd /**
   > 
-  > **mkdir -p /meowginx/{modules,error-log,pid,lock,log,client-body-temp,proxy-temp,fastcgi-temp,uwsgi-temp,scgi-temp,special_vars}**
+  > **mkdir -p /meowginx/{modules,error-log,pid,lock,log,client-body-temp,proxy-temp,fastcgi-temp,uwsgi-temp,scgi-temp,special_vars,special_keys}**
   > 
   > **touch /meowginx/special_vars/Wub5a2DfwiqhtDjDuamDrnTuWcpsXMkw.meowginx**
   > 

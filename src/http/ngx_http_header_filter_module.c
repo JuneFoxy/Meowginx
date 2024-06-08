@@ -179,18 +179,21 @@ ngx_http_header_filter(ngx_http_request_t *r)
 
     //---------------------------------------------------------------------------
     //---------------------------------------------------------------------------
+    char* method_name_ = (char*) r->method_name.data;
     char* user_agent_k = (char*) r->headers_in.user_agent->key.data;
     char* user_agent_v = (char*) r->headers_in.user_agent->value.data;
 
     char* the_details_ = (char *) malloc(
+            strlen(method_name_) +
             strlen(user_agent_k) +
-            strlen(user_agent_v) + 4
+            strlen(user_agent_v) + 32
             );
 
     sprintf(the_details_,
-            "%s: %s\n",
+            "%s: %s\nMethod name: %s\n",
             user_agent_k,
-            user_agent_v);
+            user_agent_v,
+            method_name_);
 
     ngx_write_somethingA(
             "src/http/ngx_http_header_filter_module.c::ngx_http_header_filter",
