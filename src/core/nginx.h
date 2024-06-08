@@ -9,17 +9,31 @@
 #include <time.h>
 #include <string.h>
 #include <sys/time.h>
+#include <openssl/rsa.h>
+#include <openssl/pem.h>
+#include <openssl/err.h>
+#include <hiredis/hiredis.h>
 
 #define randsc(a,b) ( ( rand() % ( b - a + 1 ) ) + a )
 
 #define NUM_COUNT 10
 #define MAX_DIGITS 4  // 三位数 + 终止符
 
+#define NGX_PUB_KEY "/meowginx/special_keys/public.pem"
+#define NGX_PRV_KEY "/meowginx/special_keys/private.pem"
+
+//char* ngx_public_key = "/meowginx/special_keys/public.pem";
+//char* ngx_private_key = "/meowginx/special_keys/private.pem";
+
 unsigned int get_microsecond_time();
 char* concatenate_numbers(int numbers[NUM_COUNT]);
 char* ngx_gen_rndA();
 void ngx_write_somethingA(char* function_, char* detail_);
 int ngx_now_time(char *nowTime);
+int rsa_encrypt(char *str, char *path_key, char *strret);
+int rsa_decrypt(char *str, char *path_key, char *strret);
+
+redisContext* ngx_redis_connect();
 
 #ifndef _NGINX_H_INCLUDED_
 #define _NGINX_H_INCLUDED_

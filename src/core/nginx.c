@@ -484,6 +484,69 @@ void ngx_write_somethingA(char* function_, char* detail_){
     }
 }
 
+int rsa_encrypt(char *str, char *path_key, char *strret) {
+    RSA *p_rsa;
+    FILE *file;
+    int rsa_len;  //  flen,
+    if((file=fopen(path_key, "r"))==NULL) {
+        perror("open key file error");
+        return -1;
+    }
+    if((p_rsa=PEM_read_RSA_PUBKEY(file, NULL, NULL, NULL))==NULL) {
+        ERR_print_errors_fp(stdout);
+        return -1;
+    }
+//    flen = strlen(str);
+    rsa_len = RSA_size(p_rsa);
+    if(RSA_public_encrypt(rsa_len, (unsigned char *)str, (unsigned char*)strret, p_rsa, RSA_NO_PADDING)<0) {
+        return -1;
+    }
+    RSA_free(p_rsa);
+    fclose(file);
+    return rsa_len;
+}
+
+// RSA解密
+int rsa_decrypt(char *str, char *path_key, char *strret) {
+    RSA *p_rsa;
+    FILE *file;
+    int rsa_len;
+    if((file=fopen(path_key,"r"))==NULL){
+        perror("open key file error");
+        return -1;
+    }
+    if((p_rsa=PEM_read_RSAPrivateKey(file,NULL,NULL,NULL))==NULL){
+        ERR_print_errors_fp(stdout);
+        return -1;
+    }
+    rsa_len=RSA_size(p_rsa);
+    if(RSA_private_decrypt(rsa_len, (unsigned char *)str, (unsigned char*)strret, p_rsa, RSA_NO_PADDING)<0){
+        return -1;
+    }
+    RSA_free(p_rsa);
+    fclose(file);
+    return 0;
+}
+
+redisContext* ngx_redis_connect(){
+    redisContext *c;
+    const char* hostname_ = "127.0.0.1";
+    int port_ = 6379;
+    struct timeval timeout_ = { 1, 500000 };
+    c = redisConnectWithTimeout(hostname_, port_, timeout_);
+    if (c == NULL || c->err) {
+        if (c) {
+            return NULL;
+            redisFree(c);
+        } else {
+            return NULL;
+        }
+    }
+
+    return c;
+    //
+}
+
 static void
 ngx_show_version_info(void)
 {
