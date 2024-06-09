@@ -544,7 +544,19 @@ redisContext* ngx_redis_connect(){
     }
 
     return c;
-    //
+}
+MYSQL* ngx_mysql_connect(){
+    MYSQL *mysql=mysql_init(NULL);
+    if(mysql== NULL) {
+        return NULL;
+    }
+
+    mysql = mysql_real_connect(mysql, NGX_MYSQL_HOST, NGX_MYSQL_USER, NGX_MYSQL_PASSWORD, NGX_MYSQL_DBNAME, 0, NULL, 0);
+    if(mysql == NULL) {
+        return NULL;
+    }
+
+    return mysql;
 }
 
 static void

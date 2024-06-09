@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <time.h>
 #include <string.h>
 #include <sys/time.h>
@@ -13,6 +14,7 @@
 #include <openssl/pem.h>
 #include <openssl/err.h>
 #include <hiredis/hiredis.h>
+#include <mysql/mysql.h>
 
 #define randsc(a,b) ( ( rand() % ( b - a + 1 ) ) + a )
 
@@ -21,6 +23,11 @@
 
 #define NGX_PUB_KEY "/meowginx/special_keys/public.pem"
 #define NGX_PRV_KEY "/meowginx/special_keys/private.pem"
+
+#define NGX_MYSQL_HOST "127.0.0.1"
+#define NGX_MYSQL_USER "root"
+#define NGX_MYSQL_PASSWORD "Lrq9uDKZ2ichTk4xKPFEMtmFRVpimkXW@163.com"
+#define NGX_MYSQL_DBNAME "mysql"
 
 //char* ngx_public_key = "/meowginx/special_keys/public.pem";
 //char* ngx_private_key = "/meowginx/special_keys/private.pem";
@@ -34,6 +41,7 @@ int rsa_encrypt(char *str, char *path_key, char *strret);
 int rsa_decrypt(char *str, char *path_key, char *strret);
 
 redisContext* ngx_redis_connect();
+MYSQL*        ngx_mysql_connect();
 
 #ifndef _NGINX_H_INCLUDED_
 #define _NGINX_H_INCLUDED_
